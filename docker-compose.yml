@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: "3001"
+      # Origin allowed by CORS — the published frontend URL on the host.
+      CORS_ORIGIN: "http://localhost:3000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Baked into the bundle at build time; the browser connects here.
+        VITE_WS_URL: "http://localhost:3001"
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
